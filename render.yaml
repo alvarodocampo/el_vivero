@@ -2,6 +2,7 @@ services:
   - type: web
     name: el-vivero
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
     startCommand: gunicorn config.wsgi:application
     envVars:
@@ -12,7 +13,7 @@ services:
       - key: DJANGO_DEBUG
         value: "False"
       - key: DJANGO_ALLOWED_HOSTS
-        value: el-vivero.onrender.com
+        value: .onrender.com
       - key: DEFAULT_PRICE_PER_NIGHT
         value: "100.00"
       - key: DATABASE_URL
