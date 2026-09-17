@@ -1,0 +1,1772 @@
+/* =========================================================
+   EL VIVERO - DISPONIBILIDAD
+========================================================= */
+
+
+/* =========================================================
+   PÁGINA FIJA
+========================================================= */
+
+html:has(body.availability-page) {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body.availability-page {
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    background: #f7f5f8;
+}
+
+body.availability-page main {
+    width: 100%;
+
+    height: calc(
+        100vh - var(--header-height)
+    );
+
+    min-height: 0;
+
+    max-height: calc(
+        100vh - var(--header-height)
+    );
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SECCIÓN
+========================================================= */
+
+.availability-page-section {
+    box-sizing: border-box;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 8px 24px 10px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #fbfafc 0%,
+            #f5f2f6 100%
+        );
+}
+
+
+/* =========================================================
+   CONTENEDOR
+========================================================= */
+
+.availability-page-container {
+    width: min(1250px, 100%);
+    height: 100%;
+
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.availability-title {
+    flex: 0 0 auto;
+
+    /*
+       Este margen inferior crea aire entre
+       la etiqueta amarilla y el calendario.
+    */
+    margin: 0 auto 28px;
+
+    text-align: center;
+}
+
+.availability-label {
+    display: block;
+
+    margin: 0 0 2px;
+
+    color: #493b5d;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+}
+
+.availability-title h1 {
+    margin: 0;
+
+    color: #493b5d;
+
+    font-size: clamp(
+        30px,
+        2.2vw,
+        38px
+    );
+
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+.availability-title p {
+    margin: 5px auto 0;
+
+    color: #6f6871;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    line-height: 1.25;
+}
+
+
+/* =========================================================
+   RESERVA MÍNIMA
+   Amarillo vainilla igual que la cabecera
+========================================================= */
+
+.minimum-stay-badge {
+    width: fit-content;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin: 12px auto 0;
+
+    padding: 9px 18px;
+
+    color: #332b63;
+
+    background-color: #f3d55c;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    box-shadow:
+        0 4px 10px
+        rgba(70, 55, 20, 0.08);
+}
+
+.minimum-stay-badge i {
+    color: #332b63;
+
+    font-size: 15px;
+}
+
+.minimum-stay-badge strong {
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   TARJETA CALENDARIO
+========================================================= */
+
+.availability-calendar-card {
+    box-sizing: border-box;
+
+    width: min(1180px, 100%);
+
+    flex: 0 0 auto;
+
+    margin: 0 auto;
+
+    padding: 12px 28px 13px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2dde4;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(55, 43, 62, .09);
+}
+
+
+/* =========================================================
+   CABECERA CALENDARIO
+========================================================= */
+
+.availability-calendar-header {
+    display: grid;
+
+    grid-template-columns:
+        42px
+        minmax(0, 1fr)
+        42px;
+
+    align-items: center;
+
+    min-height: 38px;
+
+    padding-bottom: 8px;
+
+    border-bottom:
+        1px solid #ece8ed;
+}
+
+.availability-calendar-instruction {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    color: #493b5d;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.availability-calendar-instruction i {
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   FLECHAS
+========================================================= */
+
+.availability-calendar-arrow {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: #493b5d;
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition:
+        background-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.availability-calendar-arrow:hover {
+    color: #ffffff;
+
+    background: #493b5d;
+
+    transform: scale(1.06);
+}
+
+
+/* =========================================================
+   DOS MESES
+========================================================= */
+
+.availability-months {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        1px
+        minmax(0, 1fr);
+
+    gap: 34px;
+
+    margin-top: 10px;
+}
+
+.availability-month {
+    min-width: 0;
+}
+
+.availability-month-divider {
+    width: 1px;
+
+    background: #e8e3e9;
+}
+
+
+/* =========================================================
+   MESES
+========================================================= */
+
+.availability-month h2 {
+    margin: 0 0 8px;
+
+    color: #302b34;
+
+    font-size: 21px;
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   DÍAS DE LA SEMANA
+========================================================= */
+
+.availability-weekdays {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr));
+
+    margin-bottom: 3px;
+}
+
+.availability-weekdays span {
+    height: 27px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #777078;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   DÍAS
+========================================================= */
+
+.availability-days {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr));
+
+    row-gap: 3px;
+}
+
+.availability-day,
+.availability-day-empty {
+    box-sizing: border-box;
+
+    width: 100%;
+
+    height: clamp(
+        37px,
+        4.3vh,
+        47px
+    );
+
+    min-height: 37px;
+    max-height: 47px;
+}
+
+.availability-day {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+    padding: 0;
+
+    color: #302b34;
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1;
+
+    transition:
+        background-color .15s ease,
+        color .15s ease,
+        transform .15s ease;
+}
+
+.availability-day:not(:disabled):hover {
+    color: #244f6c;
+
+    background: #edf7fc;
+
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   HOY
+========================================================= */
+
+.availability-day-today {
+    color: #493b5d;
+
+    font-weight: 900;
+}
+
+.availability-day-today::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 4px;
+
+    width: 4px;
+    height: 4px;
+
+    background: #493b5d;
+
+    border-radius: 50%;
+
+    transform: translateX(-50%);
+}
+
+
+/* =========================================================
+   PASADAS
+========================================================= */
+
+.availability-day-past {
+    color: #c3bec5 !important;
+
+    background: transparent !important;
+
+    cursor: default !important;
+
+    opacity: .75;
+}
+
+
+/* =========================================================
+   NO DISPONIBLE
+   GRIS OSCURO
+========================================================= */
+
+.availability-day-unavailable {
+    color: #ffffff !important;
+
+    background: #656168 !important;
+
+    cursor: not-allowed !important;
+
+    text-decoration: line-through;
+
+    opacity: 1 !important;
+
+    border-radius: 8px !important;
+}
+
+
+/* =========================================================
+   RANGO SELECCIONADO
+   AZUL MUY CLARO
+========================================================= */
+
+.availability-day-range {
+    color: #315c78 !important;
+
+    background: #dceffc !important;
+
+    border-radius: 5px !important;
+
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   ENTRADA Y SALIDA
+   AZUL CLARO
+========================================================= */
+
+.availability-day-start,
+.availability-day-end {
+    color: #244f6c !important;
+
+    background: #a8d8f0 !important;
+
+    border-radius: 50% !important;
+
+    font-weight: 900 !important;
+
+    box-shadow:
+        0 4px 10px
+        rgba(72, 132, 168, .22);
+}
+
+.availability-day-start::after,
+.availability-day-end::after {
+    display: none;
+}
+
+
+/* =========================================================
+   LEYENDA
+========================================================= */
+
+.availability-legend {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 28px;
+
+    margin-top: 10px;
+
+    padding-top: 9px;
+
+    color: #686169;
+
+    border-top:
+        1px solid #ece8ed;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.availability-legend div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+.availability-legend-dot {
+    width: 11px;
+    height: 11px;
+
+    display: block;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+}
+
+
+/* Disponible */
+
+.availability-legend-dot.available {
+    background: #ffffff;
+
+    border:
+        1.5px solid #858087;
+}
+
+
+/* Seleccionado */
+
+.availability-legend-dot.selected {
+    background: #a8d8f0;
+
+    border:
+        1px solid #76b7da;
+}
+
+
+/* No disponible */
+
+.availability-legend-dot.unavailable {
+    background: #656168;
+}
+
+
+/* =========================================================
+   RESUMEN INFERIOR
+========================================================= */
+
+.availability-summary {
+    box-sizing: border-box;
+
+    width: min(1180px, 100%);
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: stretch;
+
+    margin: 10px auto 0;
+
+    padding: 5px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2dde4;
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 8px 24px
+        rgba(54, 42, 61, .08);
+}
+
+.availability-summary-field {
+    flex: 1 1 0;
+
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 14px;
+
+    border-right:
+        1px solid #ece8ed;
+}
+
+.availability-summary-icon {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #493b5d;
+
+    background: #f0ebf3;
+
+    border-radius: 50%;
+
+    font-size: 13px;
+}
+
+.availability-summary-field span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #8c838d;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    line-height: 1;
+
+    text-transform: uppercase;
+}
+
+.availability-summary-field strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #302b34;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SEPARADOR
+========================================================= */
+
+.availability-summary-separator {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 3px;
+
+    color: #aaa4ac;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   HUÉSPEDES
+========================================================= */
+
+.availability-guests {
+    width: 100%;
+}
+
+.availability-guests select {
+    width: 100%;
+
+    padding: 0;
+
+    color: #302b34;
+
+    background: transparent;
+
+    border: none;
+
+    outline: none;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   BOTÓN CONTINUAR
+========================================================= */
+
+.availability-main-button {
+    min-width: 165px;
+
+    margin-left: 5px;
+
+    padding: 0 24px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #655177,
+            #493b5d
+        );
+
+    border: none;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+}
+
+.availability-main-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(72, 55, 90, .22);
+}
+
+.availability-main-button:disabled {
+    cursor: not-allowed;
+
+    opacity: .4;
+}
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+.availability-message {
+    box-sizing: border-box;
+
+    width: min(800px, 100%);
+
+    flex: 0 0 auto;
+
+    margin: 6px auto 0;
+
+    padding: 6px 12px;
+
+    border-radius: 7px;
+
+    text-align: center;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.availability-message.warning {
+    color: #755d16;
+
+    background: #fff4cd;
+
+    border: 1px solid #ecd782;
+}
+
+.availability-message.error {
+    color: #793737;
+
+    background: #fae8e8;
+
+    border: 1px solid #e7bfbf;
+}
+
+.availability-message.success {
+    color: #356347;
+
+    background: #e8f4ec;
+
+    border: 1px solid #bad9c4;
+}
+
+
+/* =========================================================
+   FORMULARIO RESERVA
+========================================================= */
+
+.reservation-form-container {
+    width: min(900px, 100%);
+
+    margin: 12px auto 0;
+
+    padding: 25px 30px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2dde4;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 12px 30px
+        rgba(54, 42, 61, .10);
+}
+
+.reservation-form-container[hidden] {
+    display: none !important;
+}
+
+.reservation-form-header {
+    margin-bottom: 18px;
+
+    text-align: center;
+}
+
+.reservation-form-header h2 {
+    margin: 0 0 5px;
+
+    color: #493b5d;
+
+    font-size: 26px;
+}
+
+.reservation-form-header p {
+    color: #777178;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESUMEN DE RESERVA
+========================================================= */
+
+.reservation-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.reservation-summary > div {
+    padding: 12px 14px;
+
+    background: #f7f4f8;
+
+    border-radius: 8px;
+}
+
+.reservation-summary span {
+    display: block;
+
+    color: #8c838d;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    text-transform: uppercase;
+}
+
+.reservation-summary strong {
+    color: #493b5d;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+.reservation-form-grid {
+    max-width: 440px;
+
+    margin: 0 auto 18px;
+}
+
+.reservation-input-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.reservation-input-group label {
+    color: #403747;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.reservation-input-group input {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    color: #302b34;
+
+    background: #ffffff;
+
+    border: 1px solid #d9d2dc;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 14px;
+}
+
+.reservation-input-group input:focus {
+    border-color: #a8d8f0;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(168, 216, 240, .25);
+}
+
+
+/* =========================================================
+   CONFIRMAR
+========================================================= */
+
+.reservation-submit-button {
+    display: block;
+
+    min-width: 200px;
+
+    margin: 0 auto;
+
+    padding: 13px 26px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #655177,
+            #493b5d
+        );
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.reservation-login-warning {
+    text-align: center;
+}
+
+.reservation-login-warning > i {
+    margin-bottom: 12px;
+
+    color: #493b5d;
+
+    font-size: 30px;
+}
+
+.reservation-login-warning h2 {
+    margin-bottom: 7px;
+
+    color: #493b5d;
+}
+
+.reservation-login-warning p {
+    margin-bottom: 18px;
+
+    color: #777178;
+}
+
+.reservation-login-actions {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 12px;
+}
+
+.reservation-login-button,
+.reservation-signup-button {
+    min-width: 160px;
+
+    padding: 11px 20px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.reservation-login-button {
+    color: #ffffff;
+
+    background: #493b5d;
+}
+
+.reservation-signup-button {
+    color: #493b5d;
+
+    background: #ffffff;
+
+    border: 1px solid #cbc3cf;
+}
+
+
+/* =========================================================
+   PANTALLAS CON POCA ALTURA
+========================================================= */
+
+@media (max-height: 800px) and (min-width: 901px) {
+
+    .availability-title {
+        margin-bottom: 18px;
+    }
+
+    .minimum-stay-badge {
+        margin-top: 7px;
+
+        padding: 6px 14px;
+
+        font-size: 12px;
+    }
+
+    .availability-calendar-card {
+        padding:
+            7px 24px 8px;
+    }
+
+    .availability-calendar-header {
+        min-height: 30px;
+
+        padding-bottom: 4px;
+    }
+
+    .availability-calendar-arrow {
+        width: 30px;
+        height: 30px;
+    }
+
+    .availability-months {
+        margin-top: 5px;
+    }
+
+    .availability-month h2 {
+        margin-bottom: 4px;
+
+        font-size: 18px;
+    }
+
+    .availability-weekdays span {
+        height: 20px;
+    }
+
+    .availability-day,
+    .availability-day-empty {
+        height: 32px;
+
+        min-height: 32px;
+        max-height: 32px;
+    }
+
+    .availability-day {
+        font-size: 12px;
+    }
+
+    .availability-legend {
+        margin-top: 5px;
+
+        padding-top: 5px;
+    }
+
+    .availability-summary {
+        margin-top: 6px;
+    }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    html:has(body.availability-page),
+    body.availability-page {
+        height: auto;
+        max-height: none;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body.availability-page main {
+        height: auto;
+        max-height: none;
+
+        overflow: visible;
+    }
+
+    .availability-page-section {
+        height: auto;
+
+        padding:
+            25px 16px 35px;
+
+        overflow: visible;
+    }
+
+    .availability-page-container {
+        height: auto;
+    }
+
+    .availability-title {
+        margin-bottom: 22px;
+    }
+
+    .availability-calendar-card {
+        padding:
+            15px 18px 18px;
+    }
+
+    .availability-months {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+    }
+
+    .availability-month-divider {
+        width: 100%;
+        height: 1px;
+    }
+
+    .availability-day,
+    .availability-day-empty {
+        height: 44px;
+
+        min-height: 44px;
+        max-height: 44px;
+    }
+
+    .availability-summary {
+        flex-wrap: wrap;
+    }
+
+    .availability-summary-field {
+        flex:
+            1 1
+            calc(50% - 10px);
+    }
+
+    .availability-main-button {
+        width: 100%;
+
+        min-height: 48px;
+
+        margin:
+            5px 0 0;
+    }
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .availability-page-section {
+        padding:
+            18px 10px 30px;
+    }
+
+    .availability-title {
+        margin-bottom: 18px;
+    }
+
+    .availability-title h1 {
+        font-size: 28px;
+    }
+
+    .minimum-stay-badge {
+        padding: 7px 13px;
+
+        font-size: 12px;
+    }
+
+    .availability-calendar-card {
+        padding:
+            12px 10px 15px;
+    }
+
+    .availability-calendar-instruction {
+        font-size: 12px;
+    }
+
+    .availability-month h2 {
+        font-size: 19px;
+    }
+
+    .availability-weekdays span {
+        font-size: 10px;
+    }
+
+    .availability-day,
+    .availability-day-empty {
+        height: 40px;
+
+        min-height: 40px;
+        max-height: 40px;
+    }
+
+    .availability-day {
+        font-size: 13px;
+    }
+
+    .availability-summary-field {
+        flex: 1 1 100%;
+    }
+
+    .availability-summary-separator {
+        display: none;
+    }
+
+    .reservation-summary {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+    .reservation-login-actions {
+        flex-direction: column;
+    }
+}
+/* =========================================================
+   MODAL FLOTANTE DE AUTENTICACIÓN
+   Se muestra encima del calendario sin necesitar scroll.
+========================================================= */
+
+.reservation-auth-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+}
+
+.reservation-auth-modal[hidden] {
+    display: none !important;
+}
+
+.reservation-auth-overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(35, 29, 39, 0.58);
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.reservation-auth-window {
+    position: relative;
+    z-index: 2;
+
+    box-sizing: border-box;
+
+    width: min(460px, calc(100vw - 40px));
+    max-height: calc(100vh - 48px);
+
+    padding: 28px 32px 26px;
+
+    overflow-y: auto;
+
+    color: #302b34;
+    background: #ffffff;
+
+    border: 1px solid #e2dde4;
+    border-radius: 18px;
+
+    box-shadow:
+        0 28px 80px rgba(31, 23, 35, 0.30);
+
+    text-align: center;
+
+    animation: reservationAuthOpen .22s ease-out;
+}
+
+@keyframes reservationAuthOpen {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.reservation-auth-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    color: #625a65;
+    background: #f4f1f5;
+
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    transition:
+        background-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.reservation-auth-close:hover {
+    color: #493b5d;
+    background: #ebe6ed;
+    transform: scale(1.05);
+}
+
+.reservation-auth-icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 10px;
+
+    color: #493b5d;
+    background: #f3d55c;
+
+    border-radius: 50%;
+
+    font-size: 19px;
+}
+
+.reservation-auth-brand {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #493b5d;
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+}
+
+.reservation-auth-window h2 {
+    margin: 0 0 8px;
+
+    color: #493b5d;
+
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.reservation-auth-text {
+    max-width: 355px;
+
+    margin: 0 auto 18px;
+
+    color: #746d76;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.reservation-auth-stay {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+    padding: 13px 15px;
+
+    background: #f7f4f8;
+
+    border: 1px solid #ece7ee;
+    border-radius: 11px;
+}
+
+.reservation-auth-stay > div:not(.reservation-auth-arrow):not(.reservation-auth-night-row) {
+    min-width: 0;
+}
+
+.reservation-auth-stay span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #8b838c;
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .8px;
+
+    text-transform: uppercase;
+}
+
+.reservation-auth-stay strong {
+    display: block;
+
+    color: #493b5d;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.reservation-auth-arrow {
+    color: #aaa3ac;
+    font-size: 12px;
+}
+
+.reservation-auth-night-row {
+    grid-column: 1 / -1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding-top: 9px;
+
+    color: #493b5d;
+
+    border-top: 1px solid #e2dde4;
+}
+
+.reservation-auth-night-row i {
+    font-size: 12px;
+}
+
+.reservation-auth-login,
+.reservation-auth-register,
+.reservation-auth-google {
+    box-sizing: border-box;
+
+    width: 100%;
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 0 18px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        background-color .18s ease,
+        border-color .18s ease;
+}
+
+.reservation-auth-login {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #655177,
+            #493b5d
+        );
+
+    border: 1px solid transparent;
+}
+
+.reservation-auth-login:hover {
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(73, 59, 93, .22);
+}
+
+.reservation-auth-question {
+    margin: 13px 0 7px;
+
+    color: #7a737c;
+
+    font-size: 12px;
+}
+
+.reservation-auth-register {
+    color: #493b5d;
+    background: #ffffff;
+
+    border: 1px solid #cfc7d2;
+}
+
+.reservation-auth-register:hover {
+    color: #493b5d;
+    background: #f8f5f9;
+    border-color: #bfb5c5;
+    transform: translateY(-1px);
+}
+
+.reservation-auth-divider {
+    position: relative;
+
+    margin: 17px 0;
+
+    text-align: center;
+}
+
+.reservation-auth-divider::before {
+    content: "";
+
+    position: absolute;
+
+    top: 50%;
+    left: 0;
+    right: 0;
+
+    height: 1px;
+
+    background: #e5e0e7;
+}
+
+.reservation-auth-divider span {
+    position: relative;
+    z-index: 1;
+
+    display: inline-block;
+
+    padding: 0 12px;
+
+    color: #958e97;
+    background: #ffffff;
+
+    font-size: 12px;
+}
+
+.reservation-auth-google {
+    color: #39353b;
+    background: #ffffff;
+
+    border: 1px solid #d8d2da;
+}
+
+.reservation-auth-google:hover {
+    color: #39353b;
+    background: #faf9fb;
+    border-color: #c8c1cb;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(30, 25, 32, .09);
+}
+
+.reservation-google-g {
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #4285f4;
+    background: #ffffff;
+
+    border: 1px solid #dedede;
+    border-radius: 50%;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.reservation-auth-footer {
+    max-width: 360px;
+
+    margin: 14px auto 0;
+
+    color: #99919a;
+
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+body.reservation-modal-open {
+    overflow: hidden !important;
+}
+
+/* =========================================================
+   MODAL EN PANTALLAS PEQUEÑAS
+========================================================= */
+
+@media (max-width: 600px) {
+    .reservation-auth-modal {
+        padding: 12px;
+    }
+
+    .reservation-auth-window {
+        width: 100%;
+        max-height: calc(100vh - 24px);
+
+        padding: 24px 20px 21px;
+
+        border-radius: 15px;
+    }
+
+    .reservation-auth-window h2 {
+        font-size: 22px;
+    }
+
+    .reservation-auth-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 17px;
+    }
+
+    .reservation-auth-stay {
+        padding: 11px 12px;
+    }
+}

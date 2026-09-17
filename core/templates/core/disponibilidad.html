@@ -1,0 +1,2518 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'core/css/availability.css' %}"
+>
+
+<style>
+/* =========================================================
+   MODAL FLOTANTE: ÚLTIMO PASO
+========================================================= */
+
+.reservation-step-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.reservation-step-modal[hidden] {
+    display: none !important;
+}
+
+.reservation-step-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(35, 29, 39, 0.58);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.reservation-step-window {
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+    width: min(610px, calc(100vw - 34px));
+    max-height: calc(100vh - 38px);
+    overflow-y: auto;
+    padding: 25px 30px 27px;
+    color: #302b34;
+    background: #ffffff;
+    border: 1px solid #e2dde4;
+    border-radius: 18px;
+    box-shadow: 0 25px 70px rgba(31, 23, 35, 0.30);
+    animation: reservationStepAppear .22s ease-out;
+}
+
+@keyframes reservationStepAppear {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.reservation-step-close {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #655d68;
+    background: #f3f0f4;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.reservation-step-heading {
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.reservation-step-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    color: #493b5d;
+    background: #f3d55c;
+    border-radius: 50%;
+    font-size: 18px;
+}
+
+.reservation-step-heading h2 {
+    margin: 3px 0 5px;
+    color: #493b5d;
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.reservation-step-heading p {
+    margin: 0;
+    color: #756e77;
+    font-size: 13px;
+}
+
+.reservation-step-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+    margin-bottom: 18px;
+}
+
+.reservation-step-summary > div {
+    min-width: 0;
+    padding: 11px 12px;
+    background: #f7f4f8;
+    border-radius: 9px;
+    text-align: center;
+}
+
+.reservation-step-summary span {
+    display: block;
+    margin-bottom: 4px;
+    color: #8c838d;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.reservation-step-summary strong {
+    display: block;
+    overflow: hidden;
+    color: #493b5d;
+    font-size: 12px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reservation-step-form .reservation-form-grid {
+    max-width: 100%;
+    margin-bottom: 18px;
+}
+
+.reservation-step-actions {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 10px;
+}
+
+.reservation-back-button,
+.reservation-step-actions .reservation-submit-button {
+    width: 100%;
+    min-height: 46px;
+    margin: 0;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.reservation-back-button {
+    color: #493b5d;
+    background: #ffffff;
+    border: 1px solid #cbc3cf;
+    cursor: pointer;
+}
+
+.reservation-back-button:hover {
+    background: #f7f4f8;
+}
+
+body.reservation-step-open {
+    overflow: hidden !important;
+}
+
+@media (max-width: 650px) {
+    .reservation-step-modal {
+        padding: 10px;
+    }
+
+    .reservation-step-window {
+        width: 100%;
+        padding: 22px 18px 20px;
+    }
+
+    .reservation-step-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .reservation-step-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block title %}
+    Disponibilidad | El Vivero
+{% endblock %}
+
+{% block body_class %}
+    availability-page
+{% endblock %}
+
+
+{% block content %}
+
+<section
+    class="availability-page-section"
+    id="availability-page"
+    data-authenticated="{{ user.is_authenticated|yesno:'true,false' }}"
+>
+
+    <div class="availability-page-container">
+
+
+        <!-- =====================================================
+             ENCABEZADO
+        ====================================================== -->
+
+        <div class="availability-title">
+
+            <span class="availability-label">
+                RESERVA TU ESTANCIA
+            </span>
+
+            <h1>
+                Disponibilidad
+            </h1>
+
+            <p>
+                Selecciona tu fecha de entrada y salida.
+            </p>
+
+
+            <div class="minimum-stay-badge">
+
+                <i class="fa-solid fa-moon"></i>
+
+                <span>
+                    Reserva mínima de
+                    <strong>2 noches</strong>
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CALENDARIO
+        ====================================================== -->
+
+        <div class="availability-calendar-card">
+
+            <div class="availability-calendar-header">
+
+                <button
+                    type="button"
+                    id="previous-month"
+                    class="availability-calendar-arrow"
+                    aria-label="Mes anterior"
+                >
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+
+                <div class="availability-calendar-instruction">
+
+                    <i class="fa-regular fa-calendar"></i>
+
+                    <span id="selection-instruction">
+                        Selecciona tu fecha de entrada
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="next-month"
+                    class="availability-calendar-arrow"
+                    aria-label="Mes siguiente"
+                >
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+            </div>
+
+
+            <!-- DOS MESES -->
+
+            <div class="availability-months">
+
+                <!-- MES 1 -->
+
+                <div class="availability-month">
+
+                    <h2 id="month-one-title"></h2>
+
+                    <div class="availability-weekdays">
+                        <span>L</span>
+                        <span>M</span>
+                        <span>X</span>
+                        <span>J</span>
+                        <span>V</span>
+                        <span>S</span>
+                        <span>D</span>
+                    </div>
+
+                    <div
+                        id="month-one-days"
+                        class="availability-days"
+                    ></div>
+
+                </div>
+
+
+                <div class="availability-month-divider"></div>
+
+
+                <!-- MES 2 -->
+
+                <div class="availability-month">
+
+                    <h2 id="month-two-title"></h2>
+
+                    <div class="availability-weekdays">
+                        <span>L</span>
+                        <span>M</span>
+                        <span>X</span>
+                        <span>J</span>
+                        <span>V</span>
+                        <span>S</span>
+                        <span>D</span>
+                    </div>
+
+                    <div
+                        id="month-two-days"
+                        class="availability-days"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- LEYENDA -->
+
+            <div class="availability-legend">
+
+                <div>
+                    <span class="availability-legend-dot available"></span>
+                    Disponible
+                </div>
+
+                <div>
+                    <span class="availability-legend-dot selected"></span>
+                    Seleccionado
+                </div>
+
+                <div>
+                    <span class="availability-legend-dot unavailable"></span>
+                    No disponible
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RESUMEN
+        ====================================================== -->
+
+        <div class="availability-summary">
+
+            <!-- ENTRADA -->
+
+            <div class="availability-summary-field">
+
+                <div class="availability-summary-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Entrada
+                    </span>
+
+                    <strong id="check-in">
+                        Seleccionar fecha
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="availability-summary-separator">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+
+
+            <!-- SALIDA -->
+
+            <div class="availability-summary-field">
+
+                <div class="availability-summary-icon">
+                    <i class="fa-solid fa-calendar-xmark"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Salida
+                    </span>
+
+                    <strong id="check-out">
+                        Seleccionar fecha
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- NOCHES -->
+
+            <div class="availability-summary-field">
+
+                <div class="availability-summary-icon">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Noches
+                    </span>
+
+                    <strong id="nights">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- HUÉSPEDES -->
+
+            <div class="availability-summary-field">
+
+                <div class="availability-summary-icon">
+                    <i class="fa-solid fa-user-group"></i>
+                </div>
+
+                <div class="availability-guests">
+
+                    <span>
+                        Huéspedes
+                    </span>
+
+                    <select
+                        id="guests"
+                        aria-label="Número de huéspedes"
+                    >
+                        <option value="1">
+                            1 huésped
+                        </option>
+
+                        <option value="2" selected>
+                            2 huéspedes
+                        </option>
+
+                        <option value="3">
+                            3 huéspedes
+                        </option>
+
+                        <option value="4">
+                            4 huéspedes
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTINUAR -->
+
+            <button
+                type="button"
+                id="check-availability-button"
+                class="availability-main-button"
+                disabled
+            >
+                Continuar
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             MENSAJES
+        ====================================================== -->
+
+        <div
+            id="availability-message"
+            class="availability-message"
+            hidden
+        ></div>
+
+
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     MODAL FLOTANTE: ÚLTIMO PASO
+========================================================= -->
+
+{% if user.is_authenticated %}
+
+<div
+    id="reservation-step-modal"
+    class="reservation-step-modal"
+    hidden
+>
+    <div
+        id="reservation-step-overlay"
+        class="reservation-step-overlay"
+    ></div>
+
+    <div
+        class="reservation-step-window"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reservation-step-title"
+    >
+        <button
+            type="button"
+            id="reservation-step-close"
+            class="reservation-step-close"
+            aria-label="Cerrar"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="reservation-step-heading">
+            <div class="reservation-step-icon">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+
+            <span class="availability-label">
+                ÚLTIMO PASO
+            </span>
+
+            <h2 id="reservation-step-title">
+                Completa tu reserva
+            </h2>
+
+            <p>
+                Estás reservando con
+                <strong>{{ user.email }}</strong>
+            </p>
+        </div>
+
+        <div class="reservation-step-summary">
+            <div>
+                <span>Entrada</span>
+                <strong id="summary-check-in">-</strong>
+            </div>
+
+            <div>
+                <span>Salida</span>
+                <strong id="summary-check-out">-</strong>
+            </div>
+
+            <div>
+                <span>Noches</span>
+                <strong id="summary-nights">-</strong>
+            </div>
+
+            <div>
+                <span>Huéspedes</span>
+                <strong id="summary-guests">-</strong>
+            </div>
+        </div>
+
+        <form
+            id="reservation-form"
+            class="reservation-form reservation-step-form"
+        >
+            {% csrf_token %}
+
+            <div class="reservation-form-grid">
+                <div class="reservation-input-group">
+                    <label for="reservation-phone">
+                        Teléfono de contacto
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="reservation-phone"
+                        name="phone"
+                        autocomplete="tel"
+                        placeholder="+34 600 000 000"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="reservation-step-actions">
+                <button
+                    type="button"
+                    id="reservation-back-button"
+                    class="reservation-back-button"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver
+                </button>
+
+                <button
+                    type="submit"
+                    class="reservation-submit-button"
+                >
+                    Confirmar reserva
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endif %}
+
+
+<!-- =========================================================
+     MODAL FLOTANTE PARA USUARIOS NO REGISTRADOS
+========================================================= -->
+
+{% if not user.is_authenticated %}
+
+<div
+    id="reservation-auth-modal"
+    class="reservation-auth-modal"
+    hidden
+>
+
+    <!-- FONDO OSCURO -->
+
+    <div
+        class="reservation-auth-overlay"
+        id="reservation-auth-overlay"
+    ></div>
+
+
+    <!-- VENTANA -->
+
+    <div
+        class="reservation-auth-window"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reservation-auth-title"
+    >
+
+        <!-- CERRAR -->
+
+        <button
+            type="button"
+            id="reservation-auth-close"
+            class="reservation-auth-close"
+            aria-label="Cerrar"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+
+        <!-- ICONO -->
+
+        <div class="reservation-auth-icon">
+
+            <i class="fa-solid fa-user-lock"></i>
+
+        </div>
+
+
+        <span class="reservation-auth-brand">
+            EL VIVERO
+        </span>
+
+
+        <h2 id="reservation-auth-title">
+            Identifícate para reservar
+        </h2>
+
+
+        <p class="reservation-auth-text">
+            Para realizar una reserva en El Vivero
+            debes estar registrado.
+        </p>
+
+
+        <!-- RESUMEN -->
+
+        <div class="reservation-auth-stay">
+
+            <div>
+
+                <span>
+                    Entrada
+                </span>
+
+                <strong id="auth-modal-check-in">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="reservation-auth-arrow">
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    Salida
+                </span>
+
+                <strong id="auth-modal-check-out">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="reservation-auth-night-row">
+
+                <i class="fa-solid fa-moon"></i>
+
+                <strong id="auth-modal-nights">
+                    -
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- INICIAR SESIÓN -->
+
+        <a
+            href="{% url 'account_login' %}?next={% url 'disponibilidad' %}"
+            class="reservation-auth-login"
+        >
+
+            <i class="fa-solid fa-right-to-bracket"></i>
+
+            <span>
+                Iniciar sesión
+            </span>
+
+        </a>
+
+
+        <p class="reservation-auth-question">
+            ¿Todavía no tienes cuenta?
+        </p>
+
+
+        <!-- REGISTRO -->
+
+        <a
+            href="{% url 'account_signup' %}?next={% url 'disponibilidad' %}"
+            class="reservation-auth-register"
+        >
+
+            <i class="fa-regular fa-user"></i>
+
+            <span>
+                Registrarme
+            </span>
+
+        </a>
+
+
+        <!-- SEPARADOR -->
+
+        <div class="reservation-auth-divider">
+
+            <span>
+                o
+            </span>
+
+        </div>
+
+
+        <!-- GOOGLE -->
+
+        <button
+            type="button"
+            class="reservation-auth-google"
+            disabled
+            title="Disponible próximamente"
+        >
+
+            <span class="reservation-google-g">
+                G
+            </span>
+
+            <span>
+                Continuar con Google
+            </span>
+
+        </button>
+
+
+        <p class="reservation-auth-footer">
+            Al continuar podrás gestionar tus reservas
+            desde tu cuenta de El Vivero.
+        </p>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* =========================================================
+       AUTENTICACIÓN
+    ========================================================= */
+
+    const availabilityPage =
+        document.getElementById(
+            "availability-page"
+        );
+
+
+    const userIsAuthenticated =
+        availabilityPage &&
+        availabilityPage.dataset.authenticated === "true";
+
+
+    /* =========================================================
+       CALENDARIO
+    ========================================================= */
+
+    const monthOneTitle =
+        document.getElementById(
+            "month-one-title"
+        );
+
+    const monthTwoTitle =
+        document.getElementById(
+            "month-two-title"
+        );
+
+    const monthOneDays =
+        document.getElementById(
+            "month-one-days"
+        );
+
+    const monthTwoDays =
+        document.getElementById(
+            "month-two-days"
+        );
+
+    const previousButton =
+        document.getElementById(
+            "previous-month"
+        );
+
+    const nextButton =
+        document.getElementById(
+            "next-month"
+        );
+
+
+    /* =========================================================
+       RESUMEN
+    ========================================================= */
+
+    const checkInText =
+        document.getElementById(
+            "check-in"
+        );
+
+    const checkOutText =
+        document.getElementById(
+            "check-out"
+        );
+
+    const nightsText =
+        document.getElementById(
+            "nights"
+        );
+
+    const guestsSelect =
+        document.getElementById(
+            "guests"
+        );
+
+    const continueButton =
+        document.getElementById(
+            "check-availability-button"
+        );
+
+    const instruction =
+        document.getElementById(
+            "selection-instruction"
+        );
+
+    const message =
+        document.getElementById(
+            "availability-message"
+        );
+
+
+    /* =========================================================
+       FORMULARIO
+    ========================================================= */
+
+    const reservationContainer =
+        document.getElementById(
+            "reservation-step-modal"
+        );
+
+    const reservationStepOverlay =
+        document.getElementById(
+            "reservation-step-overlay"
+        );
+
+    const reservationStepClose =
+        document.getElementById(
+            "reservation-step-close"
+        );
+
+    const reservationBackButton =
+        document.getElementById(
+            "reservation-back-button"
+        );
+
+    const reservationForm =
+        document.getElementById(
+            "reservation-form"
+        );
+
+    const summaryCheckIn =
+        document.getElementById(
+            "summary-check-in"
+        );
+
+    const summaryCheckOut =
+        document.getElementById(
+            "summary-check-out"
+        );
+
+    const summaryNights =
+        document.getElementById(
+            "summary-nights"
+        );
+
+    const summaryGuests =
+        document.getElementById(
+            "summary-guests"
+        );
+
+
+    /* =========================================================
+       MODAL ÚLTIMO PASO
+    ========================================================= */
+
+    function openReservationStepModal() {
+
+        if (!reservationContainer) {
+            return;
+        }
+
+        reservationContainer.hidden = false;
+        reservationContainer.style.display = "flex";
+
+        document.body.classList.add(
+            "reservation-step-open"
+        );
+    }
+
+
+    function closeReservationStepModal() {
+
+        if (!reservationContainer) {
+            return;
+        }
+
+        reservationContainer.hidden = true;
+        reservationContainer.style.display = "none";
+
+        document.body.classList.remove(
+            "reservation-step-open"
+        );
+    }
+
+
+    if (reservationStepClose) {
+        reservationStepClose.addEventListener(
+            "click",
+            closeReservationStepModal
+        );
+    }
+
+
+    if (reservationBackButton) {
+        reservationBackButton.addEventListener(
+            "click",
+            closeReservationStepModal
+        );
+    }
+
+
+    if (reservationStepOverlay) {
+        reservationStepOverlay.addEventListener(
+            "click",
+            closeReservationStepModal
+        );
+    }
+
+
+    /* =========================================================
+       MODAL DE AUTENTICACIÓN
+    ========================================================= */
+
+    const authModal =
+        document.getElementById(
+            "reservation-auth-modal"
+        );
+
+    const authOverlay =
+        document.getElementById(
+            "reservation-auth-overlay"
+        );
+
+    const authClose =
+        document.getElementById(
+            "reservation-auth-close"
+        );
+
+    const authCheckIn =
+        document.getElementById(
+            "auth-modal-check-in"
+        );
+
+    const authCheckOut =
+        document.getElementById(
+            "auth-modal-check-out"
+        );
+
+    const authNights =
+        document.getElementById(
+            "auth-modal-nights"
+        );
+
+
+    /* =========================================================
+       ESTADO
+    ========================================================= */
+
+    let visibleMonth =
+        new Date();
+
+
+    visibleMonth.setDate(1);
+
+
+    visibleMonth.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    let selectedStart =
+        null;
+
+
+    let selectedEnd =
+        null;
+
+
+    let occupiedDates =
+        [];
+
+
+    const monthNames = [
+
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+
+    ];
+
+
+    /* =========================================================
+       FECHAS OCUPADAS
+    ========================================================= */
+
+    async function loadOccupiedDates() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "{% url 'occupied_dates' %}"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "No se pudo cargar la disponibilidad."
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            occupiedDates =
+                data.occupied_dates || [];
+
+
+        } catch (error) {
+
+            console.error(
+                "Error cargando disponibilidad:",
+                error
+            );
+
+
+            occupiedDates =
+                [];
+
+        }
+
+
+        renderCalendars();
+
+    }
+
+
+    /* =========================================================
+       UTILIDADES DE FECHAS
+    ========================================================= */
+
+    function dateKey(date) {
+
+        const year =
+            date.getFullYear();
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+    function isOccupied(date) {
+
+        return occupiedDates.includes(
+            dateKey(date)
+        );
+
+    }
+
+
+    function sameDate(
+        dateOne,
+        dateTwo
+    ) {
+
+        return (
+
+            dateOne &&
+            dateTwo &&
+
+            dateOne.getFullYear() ===
+                dateTwo.getFullYear() &&
+
+            dateOne.getMonth() ===
+                dateTwo.getMonth() &&
+
+            dateOne.getDate() ===
+                dateTwo.getDate()
+
+        );
+
+    }
+
+
+    function calculateNights() {
+
+        if (
+            !selectedStart ||
+            !selectedEnd
+        ) {
+
+            return 0;
+
+        }
+
+
+        return Math.round(
+
+            (
+                selectedEnd.getTime() -
+                selectedStart.getTime()
+            )
+
+            /
+
+            86400000
+
+        );
+
+    }
+
+
+    function formatDate(date) {
+
+        return date.toLocaleDateString(
+
+            "es-ES",
+
+            {
+
+                day: "numeric",
+
+                month: "short",
+
+                year: "numeric"
+
+            }
+
+        );
+
+    }
+
+
+    function rangeContainsOccupiedDate(
+        start,
+        end
+    ) {
+
+        const current =
+            new Date(start);
+
+
+        current.setDate(
+            current.getDate() + 1
+        );
+
+
+        while (
+            current < end
+        ) {
+
+
+            if (
+                isOccupied(current)
+            ) {
+
+                return true;
+
+            }
+
+
+            current.setDate(
+                current.getDate() + 1
+            );
+
+        }
+
+
+        return false;
+
+    }
+
+
+    /* =========================================================
+       RENDERIZAR
+    ========================================================= */
+
+    function renderCalendars() {
+
+        renderMonth(
+            visibleMonth,
+            monthOneTitle,
+            monthOneDays
+        );
+
+
+        const secondMonth =
+            new Date(
+
+                visibleMonth.getFullYear(),
+
+                visibleMonth.getMonth() + 1,
+
+                1
+
+            );
+
+
+        renderMonth(
+            secondMonth,
+            monthTwoTitle,
+            monthTwoDays
+        );
+
+
+        updateSummary();
+
+    }
+
+
+    function renderMonth(
+        monthDate,
+        titleElement,
+        daysElement
+    ) {
+
+        daysElement.innerHTML =
+            "";
+
+
+        const year =
+            monthDate.getFullYear();
+
+
+        const month =
+            monthDate.getMonth();
+
+
+        titleElement.textContent =
+            `${monthNames[month]} ${year}`;
+
+
+        const firstDay =
+            new Date(
+                year,
+                month,
+                1
+            );
+
+
+        const lastDay =
+            new Date(
+                year,
+                month + 1,
+                0
+            );
+
+
+        let startPosition =
+            firstDay.getDay();
+
+
+        startPosition =
+            startPosition === 0
+                ? 6
+                : startPosition - 1;
+
+
+        /* ESPACIOS VACÍOS */
+
+        for (
+            let i = 0;
+            i < startPosition;
+            i++
+        ) {
+
+            const empty =
+                document.createElement(
+                    "span"
+                );
+
+
+            empty.className =
+                "availability-day-empty";
+
+
+            daysElement.appendChild(
+                empty
+            );
+
+        }
+
+
+        const today =
+            new Date();
+
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        /* DÍAS */
+
+        for (
+            let day = 1;
+            day <= lastDay.getDate();
+            day++
+        ) {
+
+            const date =
+                new Date(
+                    year,
+                    month,
+                    day
+                );
+
+
+            date.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.type =
+                "button";
+
+
+            button.className =
+                "availability-day";
+
+
+            button.textContent =
+                day;
+
+
+            /* PASADO */
+
+            if (
+                date < today
+            ) {
+
+                button.disabled =
+                    true;
+
+
+                button.classList.add(
+                    "availability-day-past"
+                );
+
+            }
+
+
+            /* OCUPADO */
+
+            else if (
+                isOccupied(date)
+            ) {
+
+                button.disabled =
+                    true;
+
+
+                button.classList.add(
+                    "availability-day-unavailable"
+                );
+
+
+                button.title =
+                    "No disponible";
+
+            }
+
+
+            /* DISPONIBLE */
+
+            else {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        selectDate(date);
+
+                    }
+                );
+
+            }
+
+
+            /* HOY */
+
+            if (
+                sameDate(
+                    date,
+                    today
+                )
+            ) {
+
+                button.classList.add(
+                    "availability-day-today"
+                );
+
+            }
+
+
+            /* ENTRADA */
+
+            if (
+                selectedStart &&
+                sameDate(
+                    date,
+                    selectedStart
+                )
+            ) {
+
+                button.classList.add(
+                    "availability-day-start"
+                );
+
+            }
+
+
+            /* SALIDA */
+
+            if (
+                selectedEnd &&
+                sameDate(
+                    date,
+                    selectedEnd
+                )
+            ) {
+
+                button.classList.add(
+                    "availability-day-end"
+                );
+
+            }
+
+
+            /* RANGO */
+
+            if (
+                selectedStart &&
+                selectedEnd &&
+                date > selectedStart &&
+                date < selectedEnd
+            ) {
+
+                button.classList.add(
+                    "availability-day-range"
+                );
+
+            }
+
+
+            daysElement.appendChild(
+                button
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       SELECCIONAR FECHA
+    ========================================================= */
+
+    function selectDate(date) {
+
+        hideMessage();
+
+
+        closeReservationStepModal();
+
+
+        if (
+            !selectedStart ||
+            selectedEnd
+        ) {
+
+            selectedStart =
+                new Date(date);
+
+
+            selectedEnd =
+                null;
+
+
+            instruction.textContent =
+                "Ahora selecciona la fecha de salida";
+
+
+            renderCalendars();
+
+
+            return;
+
+        }
+
+
+        if (
+            date <= selectedStart
+        ) {
+
+            selectedStart =
+                new Date(date);
+
+
+            selectedEnd =
+                null;
+
+
+            instruction.textContent =
+                "Ahora selecciona la fecha de salida";
+
+
+            renderCalendars();
+
+
+            return;
+
+        }
+
+
+        const nights =
+            Math.round(
+
+                (
+                    date.getTime() -
+                    selectedStart.getTime()
+                )
+
+                /
+
+                86400000
+
+            );
+
+
+        /* MÍNIMO 2 NOCHES */
+
+        if (
+            nights < 2
+        ) {
+
+            showMessage(
+                "La estancia mínima en El Vivero es de 2 noches.",
+                "warning"
+            );
+
+
+            return;
+
+        }
+
+
+        /* NO ATRAVESAR RESERVAS */
+
+        if (
+            rangeContainsOccupiedDate(
+                selectedStart,
+                date
+            )
+        ) {
+
+            showMessage(
+                "Hay fechas no disponibles dentro del periodo seleccionado.",
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        selectedEnd =
+            new Date(date);
+
+
+        instruction.textContent =
+            "Estancia seleccionada";
+
+
+        renderCalendars();
+
+    }
+
+
+    /* =========================================================
+       ACTUALIZAR RESUMEN
+    ========================================================= */
+
+    function updateSummary() {
+
+        if (selectedStart) {
+
+            checkInText.textContent =
+                formatDate(
+                    selectedStart
+                );
+
+
+        } else {
+
+            checkInText.textContent =
+                "Seleccionar fecha";
+
+        }
+
+
+        if (selectedEnd) {
+
+            checkOutText.textContent =
+                formatDate(
+                    selectedEnd
+                );
+
+
+        } else {
+
+            checkOutText.textContent =
+                "Seleccionar fecha";
+
+        }
+
+
+        const nights =
+            calculateNights();
+
+
+        if (
+            nights > 0
+        ) {
+
+            nightsText.textContent =
+                `${nights} ${
+                    nights === 1
+                        ? "noche"
+                        : "noches"
+                }`;
+
+
+        } else {
+
+            nightsText.textContent =
+                "-";
+
+        }
+
+
+        continueButton.disabled =
+            !(
+                selectedStart &&
+                selectedEnd &&
+                nights >= 2
+            );
+
+    }
+
+
+    /* =========================================================
+       MESES
+    ========================================================= */
+
+    previousButton.addEventListener(
+        "click",
+        function () {
+
+            const today =
+                new Date();
+
+
+            const currentMonth =
+                new Date(
+
+                    today.getFullYear(),
+
+                    today.getMonth(),
+
+                    1
+
+                );
+
+
+            const previousMonth =
+                new Date(
+
+                    visibleMonth.getFullYear(),
+
+                    visibleMonth.getMonth() - 1,
+
+                    1
+
+                );
+
+
+            if (
+                previousMonth < currentMonth
+            ) {
+
+                return;
+
+            }
+
+
+            visibleMonth =
+                previousMonth;
+
+
+            renderCalendars();
+
+        }
+    );
+
+
+    nextButton.addEventListener(
+        "click",
+        function () {
+
+            visibleMonth =
+                new Date(
+
+                    visibleMonth.getFullYear(),
+
+                    visibleMonth.getMonth() + 1,
+
+                    1
+
+                );
+
+
+            renderCalendars();
+
+        }
+    );
+
+
+    /* =========================================================
+       ABRIR MODAL
+    ========================================================= */
+
+    function openAuthModal() {
+
+        if (!authModal) {
+
+            console.error(
+                "No se encontró el modal de autenticación."
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            !selectedStart ||
+            !selectedEnd
+        ) {
+
+            return;
+
+        }
+
+
+        const nights =
+            calculateNights();
+
+
+        if (authCheckIn) {
+
+            authCheckIn.textContent =
+                formatDate(
+                    selectedStart
+                );
+
+        }
+
+
+        if (authCheckOut) {
+
+            authCheckOut.textContent =
+                formatDate(
+                    selectedEnd
+                );
+
+        }
+
+
+        if (authNights) {
+
+            authNights.textContent =
+                `${nights} ${
+                    nights === 1
+                        ? "noche"
+                        : "noches"
+                }`;
+
+        }
+
+
+        authModal.hidden =
+            false;
+
+
+        authModal.style.display =
+            "flex";
+
+
+        document.body.classList.add(
+            "reservation-modal-open"
+        );
+
+    }
+
+
+    /* =========================================================
+       CERRAR MODAL
+    ========================================================= */
+
+    function closeAuthModal() {
+
+        if (!authModal) {
+
+            return;
+
+        }
+
+
+        authModal.hidden =
+            true;
+
+
+        authModal.style.display =
+            "none";
+
+
+        document.body.classList.remove(
+            "reservation-modal-open"
+        );
+
+    }
+
+
+    if (authClose) {
+
+        authClose.addEventListener(
+            "click",
+            closeAuthModal
+        );
+
+    }
+
+
+    if (authOverlay) {
+
+        authOverlay.addEventListener(
+            "click",
+            closeAuthModal
+        );
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key !== "Escape") {
+                return;
+            }
+
+            if (
+                authModal &&
+                !authModal.hidden
+            ) {
+                closeAuthModal();
+            }
+
+            if (
+                reservationContainer &&
+                !reservationContainer.hidden
+            ) {
+                closeReservationStepModal();
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       CONTINUAR
+    ========================================================= */
+
+    continueButton.addEventListener(
+        "click",
+        function () {
+
+            hideMessage();
+
+
+            if (
+                !selectedStart ||
+                !selectedEnd
+            ) {
+
+                showMessage(
+                    "Selecciona una fecha de entrada y salida.",
+                    "warning"
+                );
+
+
+                return;
+
+            }
+
+
+            const nights =
+                calculateNights();
+
+
+            if (
+                nights < 2
+            ) {
+
+                showMessage(
+                    "La estancia mínima es de 2 noches.",
+                    "warning"
+                );
+
+
+                return;
+
+            }
+
+
+            if (
+                rangeContainsOccupiedDate(
+                    selectedStart,
+                    selectedEnd
+                )
+            ) {
+
+                showMessage(
+                    "Estas fechas no están disponibles.",
+                    "error"
+                );
+
+
+                return;
+
+            }
+
+
+            /* =================================================
+               NO HA INICIADO SESIÓN
+            ================================================= */
+
+            if (
+                !userIsAuthenticated
+            ) {
+
+                openAuthModal();
+
+                return;
+
+            }
+
+
+            /* =================================================
+               SÍ HA INICIADO SESIÓN
+            ================================================= */
+
+            const guests =
+                Number(
+                    guestsSelect.value
+                );
+
+
+            if (summaryCheckIn) {
+
+                summaryCheckIn.textContent =
+                    formatDate(
+                        selectedStart
+                    );
+
+            }
+
+
+            if (summaryCheckOut) {
+
+                summaryCheckOut.textContent =
+                    formatDate(
+                        selectedEnd
+                    );
+
+            }
+
+
+            if (summaryNights) {
+
+                summaryNights.textContent =
+                    `${nights} ${
+                        nights === 1
+                            ? "noche"
+                            : "noches"
+                    }`;
+
+            }
+
+
+            if (summaryGuests) {
+
+                summaryGuests.textContent =
+                    `${guests} ${
+                        guests === 1
+                            ? "huésped"
+                            : "huéspedes"
+                    }`;
+
+            }
+
+
+            openReservationStepModal();
+
+        }
+    );
+
+
+    /* =========================================================
+       CAMBIO HUÉSPEDES
+    ========================================================= */
+
+    guestsSelect.addEventListener(
+        "change",
+        function () {
+
+            if (reservationContainer) {
+
+                reservationContainer.hidden =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       MENSAJES
+    ========================================================= */
+
+    function showMessage(
+        text,
+        type
+    ) {
+
+        if (!message) {
+
+            return;
+
+        }
+
+
+        message.textContent =
+            text;
+
+
+        message.className =
+            `availability-message ${type}`;
+
+
+        message.hidden =
+            false;
+
+    }
+
+
+    function hideMessage() {
+
+        if (!message) {
+
+            return;
+
+        }
+
+
+        message.hidden =
+            true;
+
+    }
+
+
+    /* =========================================================
+       CREAR RESERVA
+    ========================================================= */
+
+    if (reservationForm) {
+
+        reservationForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                if (
+                    !selectedStart ||
+                    !selectedEnd
+                ) {
+
+                    return;
+
+                }
+
+
+                const phoneInput =
+                    document.getElementById(
+                        "reservation-phone"
+                    );
+
+
+                const phone =
+                    phoneInput
+                        ? phoneInput.value.trim()
+                        : "";
+
+
+                if (!phone) {
+
+                    showMessage(
+                        "Introduce un teléfono de contacto.",
+                        "warning"
+                    );
+
+
+                    return;
+
+                }
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "phone",
+                    phone
+                );
+
+
+                formData.append(
+                    "guests",
+                    guestsSelect.value
+                );
+
+
+                formData.append(
+                    "check_in",
+                    dateKey(
+                        selectedStart
+                    )
+                );
+
+
+                formData.append(
+                    "check_out",
+                    dateKey(
+                        selectedEnd
+                    )
+                );
+
+
+                const csrfInput =
+                    reservationForm.querySelector(
+                        "[name=csrfmiddlewaretoken]"
+                    );
+
+
+                const csrfToken =
+                    csrfInput
+                        ? csrfInput.value
+                        : "";
+
+
+                const submitButton =
+                    reservationForm.querySelector(
+                        ".reservation-submit-button"
+                    );
+
+
+                const originalText =
+                    submitButton.textContent;
+
+
+                submitButton.disabled =
+                    true;
+
+
+                submitButton.textContent =
+                    "Confirmando...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "{% url 'create_booking' %}",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+
+                                    "X-CSRFToken":
+                                        csrfToken
+
+                                },
+
+                                body:
+                                    formData
+
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (
+                        response.status === 401 &&
+                        data.login_required
+                    ) {
+
+                        window.location.href =
+                            "{% url 'account_login' %}?next={% url 'disponibilidad' %}";
+
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !response.ok ||
+                        !data.success
+                    ) {
+
+                        showMessage(
+                            data.message ||
+                            "No se pudo realizar la reserva.",
+                            "error"
+                        );
+
+
+                        await loadOccupiedDates();
+
+
+                        return;
+
+                    }
+
+
+                    showMessage(
+                        data.message ||
+                        "Reserva realizada correctamente.",
+                        "success"
+                    );
+
+
+                    reservationForm.reset();
+
+
+                    if (reservationContainer) {
+
+                        reservationContainer.hidden =
+                            true;
+
+                    }
+
+
+                    selectedStart =
+                        null;
+
+
+                    selectedEnd =
+                        null;
+
+
+                    instruction.textContent =
+                        "Selecciona tu fecha de entrada";
+
+
+                    await loadOccupiedDates();
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Error creando reserva:",
+                        error
+                    );
+
+
+                    showMessage(
+                        "Ha ocurrido un error al realizar la reserva.",
+                        "error"
+                    );
+
+
+                } finally {
+
+                    submitButton.disabled =
+                        false;
+
+
+                    submitButton.textContent =
+                        originalText;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       INICIAR
+    ========================================================= */
+
+    loadOccupiedDates();
+
+});
+
+</script>
+
+{% endblock %}
+
+
+{% block footer %}
+{% endblock %}

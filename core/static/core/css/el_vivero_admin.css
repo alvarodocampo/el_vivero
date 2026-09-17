@@ -1,0 +1,113 @@
+/* ======================================================
+   ETIQUETAS GENERALES
+====================================================== */
+
+.vivero-badge,
+.vivero-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 74px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+
+/* ======================================================
+   TIPO DE HUÉSPED
+====================================================== */
+
+.vivero-badge-repeat {
+    color: #493574;
+    background: #eee8fa;
+    border: 1px solid #d5c7ef;
+}
+
+.vivero-badge-new {
+    color: #17633c;
+    background: #e5f6ed;
+    border: 1px solid #bfe7d1;
+}
+
+.vivero-badge-empty {
+    color: #5f6368;
+    background: #f0f1f2;
+    border: 1px solid #d8dadd;
+}
+
+
+/* ======================================================
+   ESTADOS DE RESERVA
+====================================================== */
+
+.vivero-status-pending {
+    color: #785600;
+    background: #fff3cd;
+    border: 1px solid #ffe69c;
+}
+
+.vivero-status-confirmed {
+    color: #17633c;
+    background: #dff4e8;
+    border: 1px solid #b7e2ca;
+}
+
+.vivero-status-cancelled {
+    color: #942735;
+    background: #fbe4e7;
+    border: 1px solid #f1bbc2;
+}
+
+.vivero-status-completed {
+    color: #245f78;
+    background: #e2f2f8;
+    border: 1px solid #b8dde9;
+}
+
+.vivero-status-default {
+    color: #4d5156;
+    background: #eceef0;
+    border: 1px solid #d5d8db;
+}
+
+
+/* ======================================================
+   HISTORIAL DEL HUÉSPED
+====================================================== */
+
+.vivero-history {
+    max-width: 720px;
+}
+
+.vivero-history ul {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.vivero-history li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 12px;
+    border: 1px solid var(--hairline-color, #ddd);
+    border-radius: 8px;
+    background: var(--darkened-bg, #f8f8f8);
+}
+
+.vivero-history li span::before {
+    content: "·";
+    margin-right: 7px;
+}
+
+.vivero-history-empty {
+    color: #6b7280;
+    font-style: italic;
+}

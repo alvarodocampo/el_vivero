@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mis reservas | El Vivero{% endblock %}
+{% block body_class %}bookings-page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/my_bookings.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="bookings-shell">
+    <header class="bookings-heading">
+        <p class="bookings-kicker">Área privada</p>
+        <h1>Mis reservas</h1>
+        <p>Consulta tus próximas estancias y el historial de reservas.</p>
+    </header>
+
+    <div id="my-bookings-app"
+         data-api-url="{% url 'my_bookings' %}"
+         data-login-url="{% url 'account_login' %}?next={% url 'mis_reservas' %}">
+        <p class="bookings-loading">Cargando reservas…</p>
+    </div>
+</section>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="{% static 'core/js/my_bookings_react.js' %}"></script>
+{% endblock %}

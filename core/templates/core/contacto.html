@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Contacto | El Vivero
+{% endblock %}
+
+{% block body_class %}
+    contact-page
+{% endblock %}
+
+{% block content %}
+
+<section
+    class="contact-cover"
+    style="background-image: url('{% static 'core/images/contacto-fondo.jpg' %}');"
+>
+    <div class="contact-dark-overlay"></div>
+
+    <div class="contact-card">
+
+        <h1>Contacto</h1>
+
+        <span class="contact-line"></span>
+
+        <p class="contact-introduction">
+            Estamos encantados de ayudarte con cualquier consulta
+            sobre El Vivero.
+        </p>
+
+        <div class="contact-information">
+
+            <!-- WhatsApp -->
+            <a
+                href="https://wa.me/34678516736"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-item"
+            >
+                <i class="fa-brands fa-whatsapp"></i>
+
+                <div>
+                    <span>WhatsApp</span>
+                    <strong>+34 678 516 736</strong>
+                </div>
+            </a>
+
+            <!-- Instagram -->
+            <a
+                href="https://www.instagram.com/casaelvivero/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-item"
+            >
+                <i class="fa-brands fa-instagram"></i>
+
+                <div>
+                    <span>Instagram</span>
+                </div>
+            </a>
+
+            <!-- Correo electrónico -->
+            <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=elvivero9@gmail.com&su=Consulta%20sobre%20El%20Vivero"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-item"
+            >
+                <i class="fa-solid fa-envelope"></i>
+
+                <div>
+                    <span>Correo electrónico</span>
+                </div>
+            </a>
+
+            <!-- Ubicación -->
+            <a
+                href="https://www.google.com/maps/place/El+Vivero/@36.3924178,-6.1553089,17z/data=!3m1!4b1!4m6!3m5!1s0xd0c33899d65f7af:0xf3a97989c77938fc!8m2!3d36.3924178!4d-6.1553089!16s%2Fg%2F11j2y_d3mw?entry=ttu&g_ep=EgoyMDI2MDcyMS4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-item"
+            >
+                <i class="fa-solid fa-location-dot"></i>
+
+                <div>
+                    <span>Ubicación</span>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}k %}

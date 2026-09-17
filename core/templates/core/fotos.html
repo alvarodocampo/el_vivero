@@ -1,0 +1,555 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Fotos | El Vivero
+{% endblock %}
+
+{% block body_class %}photos-page{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Evita la barra vertical únicamente en esta página */
+    body.photos-page {
+        overflow: hidden !important;
+        background: #ffffff !important;
+    }
+
+    .photos-section {
+        width: 100% !important;
+
+        /* Cambia 105px si tu cabecera es más alta o más baja */
+        height: calc(100vh - 105px) !important;
+
+        padding: 10px 24px 14px !important;
+        margin: 0 !important;
+
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+
+        background: #ffffff !important;
+    }
+
+    .photos-container {
+        width: min(1150px, 100%) !important;
+        height: 100% !important;
+
+        margin: 0 auto !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* CABECERA DE LA GALERÍA */
+
+    .photos-heading {
+        flex-shrink: 0 !important;
+
+        margin: 0 0 10px !important;
+        padding: 0 !important;
+
+        text-align: center !important;
+    }
+
+    .photos-heading h1 {
+        margin: 0 0 3px !important;
+        padding: 0 !important;
+
+        color: #453553 !important;
+
+        font-size: 34px !important;
+        line-height: 1 !important;
+    }
+
+    .photos-heading p {
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: #6d6870 !important;
+
+        font-size: 14px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* CUADRÍCULA DE 4 COLUMNAS Y 2 FILAS */
+
+    .photos-grid {
+        flex: 1 !important;
+        min-height: 0 !important;
+
+        display: grid !important;
+
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 10px 14px !important;
+    }
+
+    /* TARJETAS */
+
+    .photos-grid .photo-card {
+        width: 100% !important;
+        height: 100% !important;
+
+        min-width: 0 !important;
+        min-height: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        text-align: center !important;
+        overflow: hidden !important;
+    }
+
+    /* CONTENEDOR DE LA IMAGEN */
+
+    .photos-grid .photo-card button {
+        flex: 1 !important;
+        min-height: 0 !important;
+
+        width: 100% !important;
+        height: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: block !important;
+
+        border: none !important;
+        border-radius: 10px !important;
+
+        overflow: hidden !important;
+
+        background: transparent !important;
+        box-shadow: 0 4px 13px rgba(0, 0, 0, 0.14) !important;
+
+        cursor: zoom-in !important;
+    }
+
+    /* IMÁGENES PEQUEÑAS Y AJUSTADAS */
+
+    .photos-grid .photo-card img {
+        width: 100% !important;
+        height: 100% !important;
+
+        max-width: none !important;
+        max-height: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        display: block !important;
+
+        object-fit: cover !important;
+        object-position: center !important;
+
+        border-radius: 10px !important;
+
+        transition: transform 0.25s ease !important;
+    }
+
+    .photos-grid .photo-card button:hover img {
+        transform: scale(1.04) !important;
+    }
+
+    /* PIE DE FOTO */
+
+    .photos-grid .photo-card h2 {
+        flex-shrink: 0 !important;
+
+        margin: 5px 0 0 !important;
+        padding: 0 !important;
+
+        color: #453553 !important;
+
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        line-height: 1.1 !important;
+    }
+
+    /* CENTRAR LAS TRES FOTOS DE ABAJO */
+
+    .photos-grid .photo-card:nth-child(5) {
+        grid-column: 1 !important;
+    }
+
+    .photos-grid .photo-card:nth-child(6) {
+        grid-column: 2 !important;
+    }
+
+    .photos-grid .photo-card:nth-child(7) {
+        grid-column: 3 / 5 !important;
+
+        width: calc(50% - 7px) !important;
+
+        justify-self: center !important;
+    }
+
+    /* VISOR DE IMAGEN AMPLIADA */
+
+    .photo-lightbox {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 99999 !important;
+
+        display: none;
+        align-items: center !important;
+        justify-content: center !important;
+
+        padding: 30px !important;
+
+        background: rgba(0, 0, 0, 0.88) !important;
+
+        box-sizing: border-box !important;
+    }
+
+    .photo-lightbox.active {
+        display: flex !important;
+    }
+
+    .photo-lightbox img {
+        width: auto !important;
+        height: auto !important;
+
+        max-width: 92vw !important;
+        max-height: 85vh !important;
+
+        object-fit: contain !important;
+
+        border-radius: 10px !important;
+
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    .photo-lightbox-close {
+        position: absolute !important;
+        top: 18px !important;
+        right: 25px !important;
+
+        border: none !important;
+        background: transparent !important;
+
+        color: #ffffff !important;
+
+        font-size: 42px !important;
+        line-height: 1 !important;
+
+        cursor: pointer !important;
+    }
+
+    .photo-lightbox-caption {
+        position: absolute !important;
+        bottom: 15px !important;
+        left: 20px !important;
+        right: 20px !important;
+
+        margin: 0 !important;
+
+        color: #ffffff !important;
+
+        font-size: 19px !important;
+        font-weight: 700 !important;
+
+        text-align: center !important;
+    }
+
+    /* ORDENADORES CON POCA ALTURA */
+
+    @media (max-height: 700px) and (min-width: 901px) {
+        .photos-section {
+            height: calc(100vh - 90px) !important;
+            padding-top: 6px !important;
+            padding-bottom: 8px !important;
+        }
+
+        .photos-heading {
+            margin-bottom: 6px !important;
+        }
+
+        .photos-heading h1 {
+            font-size: 27px !important;
+        }
+
+        .photos-heading p {
+            font-size: 12px !important;
+        }
+
+        .photos-grid {
+            gap: 7px 11px !important;
+        }
+
+        .photos-grid .photo-card h2 {
+            margin-top: 3px !important;
+            font-size: 13px !important;
+        }
+    }
+
+    /* TABLET Y MÓVIL */
+
+    @media (max-width: 900px) {
+        body.photos-page {
+            overflow-y: auto !important;
+        }
+
+        .photos-section {
+            height: auto !important;
+            min-height: calc(100vh - 80px) !important;
+
+            padding: 25px 16px !important;
+
+            overflow: visible !important;
+        }
+
+        .photos-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            grid-template-rows: none !important;
+
+            gap: 16px 12px !important;
+        }
+
+        .photos-grid .photo-card,
+        .photos-grid .photo-card:nth-child(5),
+        .photos-grid .photo-card:nth-child(6),
+        .photos-grid .photo-card:nth-child(7) {
+            grid-column: auto !important;
+
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .photos-grid .photo-card button {
+            flex: none !important;
+            height: 175px !important;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .photos-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .photos-grid .photo-card button {
+            height: 200px !important;
+        }
+    }
+</style>
+
+<section class="photos-section">
+
+    <div class="photos-container">
+
+        <div class="photos-heading">
+            <h1>Fotos</h1>
+            <p>Descubre cada rincón de El Vivero.</p>
+        </div>
+
+        <div class="photos-grid">
+
+            <article class="photo-card">
+                <button
+                    type="button"
+                    class="open-photo"
+                    data-image="{% static 'core/images/salon.jpg' %}"
+                    data-caption="Salón"
+                    aria-label="Ampliar fotografía del salón"
+                >
+                    <img
+                        src="{% static 'core/images/salon.jpg' %}"
+                        alt="Salón"
+                    >
+                </button>
+
+                <h2>Salón</h2>
+            </article>
+
+            <article class="photo-card">
+                <button
+                    type="button"
+                    class="open-photo"
+                    data-image="{% static 'core/images/dormitorio_principal.jpg' %}"
+                    data-caption="Dormitorio principal"
+                    aria-label="Ampliar fotografía del dormitorio principal"
+                >
+                    <img
+                        src="{% static 'core/images/dormitorio_principal.jpg' %}"
+                        alt="Dormitorio principal"
+                    >
+                </button>
+
+                <h2>Dormitorio principal</h2>
+            </article>
+
+            <article class="photo-card">
+                <button
+                    type="button"
+                    class="open-photo"
+                    data-image="{% static 'core/images/dormitorio_doble.jpg' %}"
+                    data-caption="Dormitorio doble"
+                    aria-label="Ampliar fotografía del dormitorio doble"
+                >
+                    <img
+                        src="{% static 'core/images/dormitorio_doble.jpg' %}"
+                        alt="Dormitorio doble"
+                    >
+                </button>
+
+                <h2>Dormitorio doble</h2>
+            </article>
+
+            <article class="photo-card">
+                <button
+                    type="button"
+                    class="open-photo"
+                    data-image="{% static 'core/images/cocina.jpg' %}"
+                    data-caption="Cocina"
+                    aria-label="Ampliar fotografía de la cocina"
+                >
+                    <img
+                        src="{% static 'core/images/cocina.jpg' %}"
+                        alt="Cocina"
+                    >
+                </button>
+
+                <h2>Cocina</h2>
+            </article>
+
+            <article class="photo-card">
+                <button
+                    type="button"
+                    class="open-photo"
+                    data-image="{% static 'core/images/bano.jpg' %}"
+                    data-caption="Baño"
+                    aria-label="Ampliar fotografía del baño"
+                >
+                    <img
+                        src="{% static 'core/images/bano.jpg' %}"
+                        alt="Baño"
+                    >
+                </button>
+
+                <h2>Baño</h2>
+            </article>
+
+            <article class="photo-card">
+                <button
+                    type="button"
+                    class="open-photo"
+                    data-image="{% static 'core/images/jardin.jpg' %}"
+                    data-caption="Jardín"
+                    aria-label="Ampliar fotografía del jardín"
+                >
+                    <img
+                        src="{% static 'core/images/jardin.jpg' %}"
+                        alt="Jardín"
+                    >
+                </button>
+
+                <h2>Jardín</h2>
+            </article>
+
+            <article class="photo-card">
+                <button
+                    type="button"
+                    class="open-photo"
+                    data-image="{% static 'core/images/barbacoa.jpg' %}"
+                    data-caption="Barbacoa"
+                    aria-label="Ampliar fotografía de la barbacoa"
+                >
+                    <img
+                        src="{% static 'core/images/barbacoa.jpg' %}"
+                        alt="Barbacoa"
+                    >
+                </button>
+
+                <h2>Barbacoa</h2>
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Visor de fotografías -->
+
+<div
+    id="photoLightbox"
+    class="photo-lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Fotografía ampliada"
+>
+    <button
+        type="button"
+        id="closeLightbox"
+        class="photo-lightbox-close"
+        aria-label="Cerrar fotografía"
+    >
+        &times;
+    </button>
+
+    <img id="lightboxImage" src="" alt="">
+
+    <p id="lightboxCaption" class="photo-lightbox-caption"></p>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const lightbox = document.getElementById("photoLightbox");
+        const lightboxImage = document.getElementById("lightboxImage");
+        const lightboxCaption = document.getElementById("lightboxCaption");
+        const closeButton = document.getElementById("closeLightbox");
+        const photoButtons = document.querySelectorAll(".open-photo");
+
+        function openLightbox(button) {
+            const image = button.dataset.image;
+            const caption = button.dataset.caption;
+
+            lightboxImage.src = image;
+            lightboxImage.alt = caption;
+            lightboxCaption.textContent = caption;
+
+            lightbox.classList.add("active");
+
+            closeButton.focus();
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove("active");
+
+            lightboxImage.src = "";
+            lightboxImage.alt = "";
+            lightboxCaption.textContent = "";
+        }
+
+        photoButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                openLightbox(button);
+            });
+        });
+
+        closeButton.addEventListener("click", closeLightbox);
+
+        lightbox.addEventListener("click", function (event) {
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (
+                event.key === "Escape" &&
+                lightbox.classList.contains("active")
+            ) {
+                closeLightbox();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

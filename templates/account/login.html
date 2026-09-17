@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Iniciar sesión | El Vivero
+{% endblock %}
+
+{% block body_class %}
+    auth-page
+{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'core/css/auth.css' %}"
+>
+{% endblock %}
+
+
+{% block content %}
+
+<section class="auth-page-section">
+
+    <div class="auth-page-background"></div>
+
+    <div class="auth-card">
+
+        <div class="auth-card-top">
+
+            <div class="auth-card-icon">
+                <i class="fa-regular fa-user"></i>
+            </div>
+
+            <span class="auth-small-title">
+                EL VIVERO
+            </span>
+
+            <h1>
+                Bienvenido de nuevo
+            </h1>
+
+            <p>
+                Inicia sesión para gestionar tus reservas
+                y disfrutar de tu estancia en El Vivero.
+            </p>
+
+        </div>
+
+
+        {% if form.non_field_errors %}
+
+            <div class="auth-message auth-message-error">
+
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <form
+            method="post"
+            action="{% url 'account_login' %}"
+            class="auth-form"
+        >
+
+            {% csrf_token %}
+
+
+            {% if redirect_field_value %}
+
+                <input
+                    type="hidden"
+                    name="{{ redirect_field_name }}"
+                    value="{{ redirect_field_value }}"
+                >
+
+            {% endif %}
+
+
+            <!-- CORREO / USUARIO -->
+
+            <div class="auth-field">
+
+                <label for="id_login">
+                    Correo electrónico o usuario
+                </label>
+
+                <div class="auth-input">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <input
+                        type="text"
+                        name="login"
+                        id="id_login"
+                        value="{{ form.login.value|default:'' }}"
+                        placeholder="tu@email.com"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+                {% if form.login.errors %}
+
+                    <div class="auth-field-error">
+
+                        {% for error in form.login.errors %}
+                            {{ error }}
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- CONTRASEÑA -->
+
+            <div class="auth-field">
+
+                <label for="id_password">
+                    Contraseña
+                </label>
+
+                <div class="auth-input">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        placeholder="Introduce tu contraseña"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- OPCIONES -->
+
+            <div class="auth-login-options">
+
+                <label class="auth-remember">
+
+                    <input
+                        type="checkbox"
+                        name="remember"
+                    >
+
+                    <span>
+                        Recordarme
+                    </span>
+
+                </label>
+
+
+                <a href="{% url 'account_reset_password' %}">
+                    ¿Has olvidado tu contraseña?
+                </a>
+
+            </div>
+
+
+            <!-- BOTÓN -->
+
+            <button
+                type="submit"
+                class="auth-main-button"
+            >
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+                Iniciar sesión
+
+            </button>
+
+        </form>
+
+
+        <div class="auth-separator">
+
+            <span>
+                o
+            </span>
+
+        </div>
+
+
+        <!-- GOOGLE DE MOMENTO NO EJECUTA OAUTH -->
+
+        <button
+            type="button"
+            class="auth-google-button"
+            disabled
+        >
+
+            <span class="auth-google-g">
+                G
+            </span>
+
+            Continuar con Google
+
+        </button>
+
+
+        <div class="auth-register-link">
+
+            <span>
+                ¿Todavía no tienes una cuenta?
+            </span>
+
+            <a href="{% url 'account_signup' %}">
+                Regístrate
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+
+{% block footer %}
+{% endblock %}

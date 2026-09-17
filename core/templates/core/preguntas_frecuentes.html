@@ -1,0 +1,532 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Preguntas frecuentes | El Vivero
+{% endblock %}
+
+{% block body_class %}
+    frequently-asked-page
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================================
+       PÁGINA FIJA
+    ========================================================= */
+
+    html:has(body.frequently-asked-page) {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body.frequently-asked-page {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+
+        margin: 0;
+
+        overflow: hidden;
+
+        background: #f6f3f7;
+    }
+
+    body.frequently-asked-page main {
+        width: 100%;
+
+        height: calc(
+            100vh - var(--header-height, 96px)
+        );
+
+        min-height: 0;
+
+        overflow: hidden;
+    }
+
+
+    /* =========================================================
+       PÁGINA
+    ========================================================= */
+
+    .frequent-page {
+        box-sizing: border-box;
+
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 14px 28px 18px;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                180deg,
+                #fbfafc 0%,
+                #f4f1f6 100%
+            );
+    }
+
+
+    /* =========================================================
+       ENCABEZADO
+    ========================================================= */
+
+    .frequent-heading {
+        flex: 0 0 auto;
+
+        width: 100%;
+
+        margin-bottom: 12px;
+
+        text-align: center;
+    }
+
+    .frequent-heading span {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #493b5d;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1.8px;
+
+        line-height: 1;
+
+        text-transform: uppercase;
+    }
+
+    .frequent-heading h1 {
+        margin: 0;
+
+        color: #493b5d;
+
+        font-size: clamp(
+            28px,
+            2.2vw,
+            38px
+        );
+
+        font-weight: 800;
+
+        line-height: 1.1;
+    }
+
+    .frequent-heading p {
+        margin: 5px 0 0;
+
+        color: #716a74;
+
+        font-size: 13px;
+
+        line-height: 1.3;
+    }
+
+
+    /* =========================================================
+       TARJETA
+    ========================================================= */
+
+    .frequent-card {
+        box-sizing: border-box;
+
+        width: min(
+            1000px,
+            92vw
+        );
+
+        flex: 1;
+        min-height: 0;
+
+        display: flex;
+        flex-direction: column;
+
+        margin: 0 auto;
+
+        overflow: hidden;
+
+        background: #ffffff;
+
+        border: 1px solid #ddd7e1;
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 16px 42px
+            rgba(50, 39, 59, 0.13);
+    }
+
+
+    /* =========================================================
+       BARRA SUPERIOR DEL DOCUMENTO
+    ========================================================= */
+
+    .frequent-toolbar {
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 18px;
+
+        padding: 10px 16px;
+
+        background: #ffffff;
+
+        border-bottom: 1px solid #e7e2e9;
+    }
+
+    .frequent-document-info {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+    }
+
+    .frequent-document-icon {
+        width: 40px;
+        height: 40px;
+
+        flex: 0 0 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #493b5d;
+
+        background: #f3d55c;
+
+        border-radius: 50%;
+
+        font-size: 17px;
+    }
+
+    .frequent-document-text span {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #928a94;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .frequent-document-text strong {
+        display: block;
+
+        color: #3d3445;
+
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+
+    /* =========================================================
+       BOTONES
+    ========================================================= */
+
+    .frequent-actions {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+    }
+
+    .frequent-actions a {
+        min-height: 38px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        padding: 0 15px;
+
+        border-radius: 8px;
+
+        font-size: 12px;
+        font-weight: 800;
+
+        text-decoration: none;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .frequent-open {
+        color: #493b5d;
+
+        background: #f3d55c;
+    }
+
+    .frequent-download {
+        color: #ffffff;
+
+        background: #493b5d;
+    }
+
+    .frequent-actions a:hover {
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 6px 15px
+            rgba(55, 43, 62, 0.16);
+    }
+
+
+    /* =========================================================
+       VISOR DEL PDF
+    ========================================================= */
+
+    .frequent-viewer-container {
+        flex: 1;
+        min-height: 0;
+
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+
+        padding: 10px;
+
+        overflow: hidden;
+
+        background: #dedbe1;
+    }
+
+    .frequent-pdf {
+        display: block;
+
+        width: 100%;
+        height: 100%;
+
+        margin: 0 auto;
+
+        background: #ffffff;
+
+        border: none;
+
+        border-radius: 8px;
+    }
+
+
+    /* =========================================================
+       PANTALLAS CON POCA ALTURA
+    ========================================================= */
+
+    @media (max-height: 760px) and (min-width: 701px) {
+
+        .frequent-page {
+            padding-top: 7px;
+            padding-bottom: 8px;
+        }
+
+        .frequent-heading {
+            margin-bottom: 7px;
+        }
+
+        .frequent-heading h1 {
+            font-size: 27px;
+        }
+
+        .frequent-heading p {
+            margin-top: 2px;
+
+            font-size: 11px;
+        }
+
+        .frequent-toolbar {
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+
+    }
+
+
+    /* =========================================================
+       MÓVIL
+    ========================================================= */
+
+    @media (max-width: 700px) {
+
+        html:has(body.frequently-asked-page),
+        body.frequently-asked-page {
+            height: auto;
+            max-height: none;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body.frequently-asked-page main {
+            height: auto;
+
+            min-height: calc(
+                100vh - var(--header-height, 96px)
+            );
+
+            overflow: visible;
+        }
+
+        .frequent-page {
+            height: auto;
+
+            min-height: calc(
+                100vh - var(--header-height, 96px)
+            );
+
+            padding: 18px 12px 25px;
+
+            overflow: visible;
+        }
+
+        .frequent-card {
+            width: 100%;
+
+            height: 720px;
+            min-height: 720px;
+        }
+
+        .frequent-toolbar {
+            align-items: stretch;
+
+            flex-direction: column;
+        }
+
+        .frequent-actions {
+            width: 100%;
+        }
+
+        .frequent-actions a {
+            flex: 1;
+        }
+
+    }
+
+</style>
+
+
+<section class="frequent-page">
+
+    <!-- ENCABEZADO -->
+
+    <div class="frequent-heading">
+
+        <span>
+            Información
+        </span>
+
+        <h1>
+            Preguntas frecuentes
+        </h1>
+
+        <p>
+            Encuentra respuesta a las dudas más habituales
+            sobre tu estancia en El Vivero.
+        </p>
+
+    </div>
+
+
+    <!-- DOCUMENTO -->
+
+    <div class="frequent-card">
+
+        <div class="frequent-toolbar">
+
+            <div class="frequent-document-info">
+
+                <div class="frequent-document-icon">
+
+                    <i class="fa-solid fa-file-pdf"></i>
+
+                </div>
+
+
+                <div class="frequent-document-text">
+
+                    <span>
+                        Documento
+                    </span>
+
+                    <strong>
+                        Preguntas frecuentes de El Vivero
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="frequent-actions">
+
+                <a
+                    href="{% static 'core/documents/preguntas-frecuentes-el-vivero.pdf' %}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="frequent-open"
+                >
+
+                    <i class="fa-solid fa-up-right-from-square"></i>
+
+                    Abrir
+
+                </a>
+
+
+                <a
+                    href="{% static 'core/documents/preguntas-frecuentes-el-vivero.pdf' %}"
+                    download="Preguntas-Frecuentes-El-Vivero.pdf"
+                    class="frequent-download"
+                >
+
+                    <i class="fa-solid fa-download"></i>
+
+                    Descargar
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- VISOR -->
+
+        <div class="frequent-viewer-container">
+
+            <iframe
+                class="frequent-pdf"
+                src="{% static 'core/documents/preguntas-frecuentes-el-vivero.pdf' %}#view=FitH&toolbar=1&navpanes=0"
+                title="Preguntas frecuentes de El Vivero"
+            ></iframe>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+
+{% block footer %}
+{% endblock %}

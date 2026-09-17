@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Información | El Vivero
+{% endblock %}
+
+{% block body_class %}
+information-page
+{% endblock %}
+
+{% block content %}
+
+<section class="information-section">
+
+    <div class="information-container">
+
+        <div class="information-heading">
+
+            <h1>Información</h1>
+
+            <p class="minimum-stay">
+                <i class="fa-solid fa-moon"></i>
+                Reserva mínima de <strong>2 noches</strong>
+            </p>
+
+            <p class="information-intro">
+                Consulta todo lo necesario para disfrutar de tu estancia
+                en El Vivero.
+            </p>
+
+        </div>
+
+        <div class="information-options">
+
+            <!-- Normas -->
+
+            <a href="{% url 'normas' %}" class="information-option">
+
+                <i class="fa-solid fa-house-circle-check"></i>
+
+                <h2>Normas de la casa</h2>
+
+                <p>
+                    Consulta las normas del alojamiento para disfrutar
+                    de una estancia cómoda y agradable.
+                </p>
+
+                <span>
+                    Ver normas
+                    <i class="fa-solid fa-arrow-right"></i>
+                </span>
+
+            </a>
+
+            <!-- Fotos -->
+
+            <a href="{% url 'fotos' %}" class="information-option">
+
+                <i class="fa-solid fa-images"></i>
+
+                <h2>Fotos</h2>
+
+                <p>
+                    Descubre cada rincón de El Vivero antes de tu llegada
+                    y conoce todas sus instalaciones.
+                </p>
+
+                <span>
+                    Ver fotografías
+                    <i class="fa-solid fa-arrow-right"></i>
+                </span>
+
+            </a>
+
+            <!-- Extras -->
+
+            <a href="{% url 'extras' %}" class="information-option">
+
+                <i class="fa-solid fa-star"></i>
+
+                <h2>Extras</h2>
+
+                <p>
+                    Consulta los servicios adicionales disponibles para
+                    hacer tu estancia aún más especial.
+                </p>
+
+                <span>
+                    Ver extras
+                    <i class="fa-solid fa-arrow-right"></i>
+                </span>
+
+            </a>
+
+            <!-- Preguntas frecuentes -->
+
+            <a href="{% url 'preguntas_frecuentes' %}" class="information-option">
+
+                <i class="fa-solid fa-circle-question"></i>
+
+                <h2>Preguntas frecuentes</h2>
+
+                <p>
+                    Resuelve las dudas más habituales sobre reservas,
+                    horarios, mascotas, pagos y funcionamiento
+                    del alojamiento.
+                </p>
+
+                <span>
+                    Ver preguntas frecuentes
+                    <i class="fa-solid fa-arrow-right"></i>
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

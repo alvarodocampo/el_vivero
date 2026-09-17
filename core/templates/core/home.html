@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    El Vivero | Alojamiento turístico
+{% endblock %}
+
+{% block body_class %}
+    home-page
+{% endblock %}
+
+{% block content %}
+
+<section class="hero-cover">
+
+    <div class="hero-dark-overlay"></div>
+
+    <div class="hero-layout">
+
+        <div class="hero-purple-card">
+
+            <div class="hero-card-content">
+
+                <h1>Bienvenidos</h1>
+
+                <span class="hero-line"></span>
+
+                <h2>El Vivero</h2>
+
+                <p>
+                    Alojamiento Rural con jardín privado.
+                </p>
+
+                <p class="pet-friendly">
+                    <span>Trae contigo a tu mejor amigo</span>
+                    <i class="fa-solid fa-paw"></i>
+                </p>
+
+                <a
+                    href="{% url 'disponibilidad' %}"
+                    class="hero-booking-button hero-card-button">
+                    Reservar ahora
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="hero-description">
+
+            <h2>Descanso y Sol</h2>
+
+            <p>
+                En una tranquila y cuidada zona residencial de
+                Chiclana de la Frontera se encuentra la casa de
+                vacaciones El Vivero. Situada en una gran parcela
+                vallada, con jardín privado y con capacidad para 4 personas.
+            </p>
+
+            <p>
+                Una acogedora casa, muy bien amueblada y pensada
+                para disfrutar en familia y con mascotas.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
